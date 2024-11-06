@@ -44,7 +44,7 @@ func PortGen(port string) []int {
 }
 
 func allPorts() []int {
-	ports := make([]int, 65536)
+	ports := make([]int, 65537)
 	for i := 1; i <= 65536; i++ {
 		ports[i] = i
 	}
@@ -57,7 +57,7 @@ func fastScanPorts() []int {
 }
 
 func reservedPorts() []int {
-	ports := make([]int, 1024)
+	ports := make([]int, 1025)
 	for i := 1; i <= 1024; i++ {
 		ports[i] = i
 	}
@@ -65,7 +65,7 @@ func reservedPorts() []int {
 }
 
 func rangeOfPorts(start int, end int) []int {
-	ports := make([]int, (end - start))
+	ports := make([]int, (end-start)+1)
 	for i := start; i <= end; i++ {
 		ports[i] = i
 	}
