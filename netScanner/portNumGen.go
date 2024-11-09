@@ -44,8 +44,8 @@ func PortGen(port string) []int {
 }
 
 func allPorts() []int {
-	ports := make([]int, 65537)
-	for i := 1; i <= 65536; i++ {
+	ports := make([]int, 65536)
+	for i := 1; i <= 65535; i++ {
 		ports[i] = i
 	}
 	return ports
@@ -65,9 +65,15 @@ func reservedPorts() []int {
 }
 
 func rangeOfPorts(start int, end int) []int {
+	if start <= 0 || end >= 65536 {
+		fmt.Println("!!! Port range out of bound (only range 1 to 65535 allowed) !!!")
+		os.Exit(1)
+	}
 	ports := make([]int, (end-start)+1)
-	for i := start; i <= end; i++ {
-		ports[i] = i
+	port := start - 1
+	for i := 0; i <= (end - start); i++ {
+		port += 1
+		ports[i] = port
 	}
 	return ports
 }
