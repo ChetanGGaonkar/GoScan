@@ -5,8 +5,12 @@ import (
 	"time"
 )
 
-func TcpAckScan(laddr, remoteAddr string, ports []int) {
+func TcpAckScan(laddr, remoteAddr string, ports []int) ([]int, []int) {
 
+	var (
+		filteredPort   []int
+		unfilteredPort []int
+	)
 	for _, p := range ports {
 		var status string
 		srcPort := uint16(9000)
@@ -15,10 +19,11 @@ func TcpAckScan(laddr, remoteAddr string, ports []int) {
 		var statusValue int = receivePacket(laddr, remoteAddr)
 		time.Sleep(100 * time.Millisecond)
 		if statusValue == 2 {
-			status = "Unfiltered"
+			unfilteredPort = append(unfilteredPort, p)
 		} else {
-			status = "Filtered"
+			filteredPort = append(filteredPort, p)
 		}
 		fmt.Printf("Port %d status: %s\n", p, status)
 	}
+	return filteredPort, unfilteredPort
 }

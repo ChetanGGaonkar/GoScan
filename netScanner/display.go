@@ -34,5 +34,21 @@ func dispResult(openPort []int, filteredPort []int, unfilteredPort []int, closed
 				fmt.Printf("%v\tFiltered\n", i)
 			}
 		}
+	} else {
+		if len(unfilteredPort) > len(filteredPort) && len(filteredPort) != 0 {
+			fmt.Printf("There are %v unfiltered ports\n", len(unfilteredPort))
+			fmt.Println("Port\tStatus")
+			for _, i := range filteredPort {
+				fmt.Printf("%v\tFiltered\n", i)
+			}
+		} else if len(unfilteredPort) > len(filteredPort) && len(filteredPort) == 0 {
+			fmt.Printf("There are %v unfiltered ports\n(Ports not shown)\n", len(unfilteredPort))
+		} else {
+			fmt.Printf("There are %v filtered ports\n", len(filteredPort))
+			fmt.Println("Port\tStatus\n")
+			for _, i := range unfilteredPort {
+				fmt.Printf("%v\tUnfiltered\n", i)
+			}
+		}
 	}
 }

@@ -64,15 +64,28 @@ func ScanSelect(laddr, rHost, scanType, port string) {
 
 	case "A":
 		fmt.Println("Doing a TCP Ack scan")
+		wg.Add(numCpu)
 		for i := 0; i < numCpu-1; i++ {
-			endIndex += (len(ports) / numCpu)
-			go protocol.TcpAckScan(laddr, addrs[0], ports[startIndex:endIndex])
-			startIndex = endIndex + 1
-			wg.Add(1)
+			startIndex += endIndex
+			endIndex = endIndex + (len(ports) / numCpu)
+			portSlice := ports[startIndex:endIndex]
+			go func() {
+				filtered, unfiltered := protocol.TcpAckScan(laddr, addrs[0], portSlice)
+				unfilteredPort = append(unfilteredPort, unfiltered...)
+				filteredPort = append(filteredPort, filtered...)
+				wg.Done()
+			}()
 		}
-		go protocol.TcpAckScan(laddr, addrs[0], ports[startIndex:])
-		wg.Add(1)
+		startIndex += endIndex
+		endIndex += (len(ports) / numCpu)
+		go func() {
+			filtered, unfiltered := protocol.TcpAckScan(laddr, addrs[0], ports[startIndex:])
+			unfilteredPort = append(unfilteredPort, unfiltered...)
+			filteredPort = append(filteredPort, filtered...)
+			wg.Done()
+		}()
 		wg.Wait()
+		dispResult(openPort, filteredPort, unfilteredPort, closedPort)
 
 	case "T":
 		fmt.Println("Doing TCP Connect scan")
@@ -106,3 +119,5 @@ func ScanSelect(laddr, rHost, scanType, port string) {
 		os.Exit(1)
 	}
 }
+
+// CBITS{4n_1n73res71ng_pr0j3c7}
